@@ -80,7 +80,7 @@ You can add CacheManager to your project using Swift Package Manager. Add the fo
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/yourusername/CacheManager.git", from: "1.0.0")
+    .package(url: "https://github.com/FranZhou/CacheManager.git", from: "1.0.0")
 ]
 ```
 
