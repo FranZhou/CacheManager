@@ -87,7 +87,7 @@ public class MemoryCacheManager<Key: Hashable, Value>: CacheManagerProtocol {
             for key in lruCache.keys {
                 guard let value = lruCache.value(forKey: key),
                       value.isExpired(currentTime: timeProvider.currentTime) else {
-                    return
+                    continue
                 }
                 lruCache.removeValue(forKey: key)
             }
