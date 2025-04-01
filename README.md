@@ -48,7 +48,7 @@ let diskCacheConfig = DiskCacheConfiguration(
         cleanupInterval: nil,
         cacheDirectory: {
             let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            let directory = path.appendingPathComponent("\(TrackYourDreamCNModule.logContext)/\("cacheManagerDemo")")
+            let directory = path.appendingPathComponent("cacheManagerDemo")
             return directory
         }(),
         expirationPolicy: .sinceLastAccess(TimeInterval(30 * 24 * 60 * 60))
