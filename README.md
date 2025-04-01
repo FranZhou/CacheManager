@@ -35,16 +35,31 @@ The `CacheManagerProtocol` defines the core functionality for all cache managers
 Here's a basic example of how to use CacheManager:
 
 ```swift
+// Create readWrite lock
+let readWriteLock = RecursiveReadWriteLock()
+
 // Create configurations
-let memoryCacheConfig = MemoryCacheConfiguration(capacity: 100, expirationPolicy: .sinceLastAccess(60 * 60))
-let diskCacheConfig = DiskCacheConfiguration(directoryName: "MyCache", expirationPolicy: .sinceCreation(24 * 60 * 60))
+let memoryCacheConfig = MemoryCacheConfiguration(
+        cleanupInterval: nil,
+        capacity: 14,
+        expirationPolicy: .sinceLastAccess(TimeInterval(30 * 24 * 60 * 60))
+    )
+let diskCacheConfig = DiskCacheConfiguration(
+        cleanupInterval: nil,
+        cacheDirectory: {
+            let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let directory = path.appendingPathComponent("\(TrackYourDreamCNModule.logContext)/\("cacheManagerDemo")")
+            return directory
+        }(),
+        expirationPolicy: .sinceLastAccess(TimeInterval(30 * 24 * 60 * 60))
+    )
 
 // Create individual cache managers
-let memoryCache = MemoryCacheManager<String, Data>(configuration: memoryCacheConfig, readWriteLock: GCDReadWriteLock())
-let diskCache = DiskCacheManager<String, Data>(configuration: diskCacheConfig, readWriteLock: GCDReadWriteLock())
+let memoryCache = MemoryCacheManager<String, Data>(configuration: memoryCacheConfig, readWriteLock: readWriteLock)
+let diskCache = DiskCacheManager<String, Data>(configuration: diskCacheConfig, readWriteLock: readWriteLock)
 
 // Create a multi-level cache manager
-let cacheManager = MultiLevelCacheManager(cacheManagers: [memoryCache, diskCache], readWriteLock: GCDReadWriteLock())
+let cacheManager = MultiLevelCacheManager(cacheManagers: [memoryCache, diskCache], readWriteLock: readWriteLock)
 
 // Use the cache manager
 cacheManager.setValue(myData, forKey: "myKey")
@@ -85,14 +100,6 @@ Created by Fan Zhou.
 ## Contributing
 
 Contributions to CacheManager are welcome! Please feel free to submit a Pull Request.
-
-## TODO
-
-- Add unit tests for edge cases
-- Implement size-based limits for disk cache
-- Add support for custom serialization/deserialization
-- Create documentation and usage examples
-- Implement background cleanup for disk cache on iOS
 
 ## Acknowledgements
 
